@@ -31,10 +31,12 @@ public final class NFrame {
 
     private final String className;
     private final String methodName;
+    private final String location;
 
-    public NFrame(String className, String methodName) {
+    public NFrame(String className, String methodName, String location) {
         this.className = className;
         this.methodName = methodName;
+        this.location = location;
     }
 
     public String getClassName() {
@@ -51,7 +53,7 @@ public final class NFrame {
     }
 
     public String toPrettyString() {
-        return className + "." + methodName;
+        return className + "." + methodName + location;
     }
 
 }

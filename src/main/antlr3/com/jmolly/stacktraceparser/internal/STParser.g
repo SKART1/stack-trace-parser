@@ -48,6 +48,7 @@ LOC;
 THR;
 TNAME;
 PRELIM;
+LOCATION;
 }
 
 @header {
@@ -66,7 +67,8 @@ atlines
 : (atline WS?)+ -> ^(ATS atline*);
 atline: AT WS classname DOT methodname location -> ^(AT ^(CLS classname) ^(METH methodname) ^(LOC location));
 
-location: LP sourcefile (COLON NUMBER)? RP;
+location: LP sourcefile (COLON NUMBER)? RP
+ -> {new CommonTree(new CommonToken(LOCATION,$location.text))};
 sourcefile: (NMETH|UNSRC|identifier (DOT fileext)?);
 
 cause: CB WS classname WS? message? atlines (WS moreline)? (WS cause)?
