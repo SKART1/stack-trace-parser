@@ -66,6 +66,11 @@ public class ParserTest {
         assertEquals(result.getTrace().getNested().getNested().getNested().getNested(), null);
     }
 
+    public void testWithoutLineNumbers() throws IOException, RecognitionException {
+        NStackTrace result = StackTraceParser.parse(loadStack("WithoutLineNumbers.txt"));
+        //assertEquals(result.getThreadName(), "main");
+    }
+
     public void testIllformed() throws RecognitionException {
         NStackTrace result = StackTraceParser.parse(loadStack("Illformed.txt"));
         assertEquals(result.getThreadName(), "");

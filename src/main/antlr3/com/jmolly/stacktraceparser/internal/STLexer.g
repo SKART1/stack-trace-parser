@@ -47,6 +47,7 @@ AT:'at';
 IN:'in';
 MORE:'more';
 JAVA:'java';
+NEWLINE: ('\n'|'\r'|'\n\r'|'\r\n');
 
 QS:'"' .* '"' {setText(getText().substring(1, getText().length()-1));};
 

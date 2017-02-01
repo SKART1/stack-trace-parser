@@ -55,23 +55,23 @@ LOCATION;
 package com.jmolly.stacktraceparser.internal;
 }
 
-estack: prelim atlines (WS cause)? EOF
+estack: prelim atlines (NEWLINE cause)? EOF
 -> ^(ESTACK prelim atlines cause?);
 
-prelim: (EIT WS threadname WS)? (classname WS?)? message?
+prelim: (EIT WS NEWLINE? threadname WS NEWLINE?)? (classname WS? NEWLINE?)? message?
 -> ^(PRELIM ^(THR threadname?) ^(EXC ^(CLS classname?) ^(MSG message?)));
 
 threadname: ((QS)=> QS | .*) -> {new CommonTree(new CommonToken(TNAME,$threadname.text))};
 atlines
 @init { consumeUntil(input, AT); }
-: (atline WS?)+ -> ^(ATS atline*);
+: (atline WS? NEWLINE?)+ -> ^(ATS atline*);
 atline: AT WS classname DOT methodname location -> ^(AT ^(CLS classname) ^(METH methodname) ^(LOC location));
 
 location: LP sourcefile (COLON NUMBER)? RP
  -> {new CommonTree(new CommonToken(LOCATION,$location.text))};
 sourcefile: (NMETH|UNSRC|identifier (DOT fileext)?);
 
-cause: CB WS classname WS? message? atlines (WS moreline)? (WS cause)?
+cause: CB WS classname WS? message? atlines (moreline)? (NEWLINE cause)?
 -> ^(CAUSE ^(EXC ^(CLS classname) ^(MSG message?)) atlines ^(MORE moreline?) cause?);
 
 moreline: ELLIPSIES WS NUMBER WS MORE;
