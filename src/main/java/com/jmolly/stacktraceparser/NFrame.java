@@ -57,7 +57,7 @@ public final class NFrame {
     }
 
     public String toPrettyString() {
-        return className + "." + methodName + location;
+        return className + "." + methodName + "("+ location + ")";
     }
 
 }
