@@ -33,10 +33,10 @@ public final class NFrame {
     private final String methodName;
     private final String location;
 
-    public NFrame(String className, String methodName, String location) {
-        this.className = className;
-        this.methodName = methodName;
-        this.location = location;
+    public NFrame(String fullMethodName, String location) {
+        this.className = fullMethodName.substring(0, fullMethodName.lastIndexOf("."));
+        this.methodName = fullMethodName.substring(fullMethodName.lastIndexOf(".") + 1);
+        this.location = ((location != null) ? location: "");
     }
 
     public String getClassName() {
@@ -45,6 +45,10 @@ public final class NFrame {
 
     public String getMethodName() {
         return methodName;
+    }
+
+    public String getLocation() {
+        return location;
     }
 
     @Override

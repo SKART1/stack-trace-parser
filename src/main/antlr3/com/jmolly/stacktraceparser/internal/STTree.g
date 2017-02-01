@@ -51,8 +51,8 @@ curr.setException(NException.create($CNAME.text,$MSGSTR.text));
 stackTrace=NStackTrace.withNameAndStack($t==null?"":$t.getText(), curr);};
 
 atlines: ^(ATS atline*);
-atline: ^(AT ^(CLS CNAME) ^(METH MNAME) ^(LOC LOCATION?))
-{traces.peek().push(new NFrame($CNAME.text,$MNAME.text,$LOCATION.text));};
+atline: ^(AT ^(METH MNAME) ^(LOC LOCATION?))
+{traces.peek().push(new NFrame($MNAME.text,$LOCATION.text));};
 
 cause
 @init {traces.push(NTrace.start());}

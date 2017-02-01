@@ -1,4 +1,6 @@
-java.lang.IndexOutOfBoundsException: Invalid index 0, size is 0
-	at java.util.ArrayList.throwIndexOutOfBoundsException
-
-
+Exception in thread "main" java.lang.RuntimeException: java.lang.reflect.InvocationTargetException
+	at test.a.pkg.Dog.bark
+	at test.a.pkg.Cat.meow
+Caused by: java.lang.IllegalStateException: You tried to spin.
+    at Cobby.spin
+    ... 14 more

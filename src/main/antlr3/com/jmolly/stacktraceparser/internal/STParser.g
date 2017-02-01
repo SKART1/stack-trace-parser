@@ -30,6 +30,7 @@ parser grammar STParser;
 options {
     output = AST;
     tokenVocab = STLexer;
+    memoize=true;
 }
 
 tokens {
@@ -58,18 +59,20 @@ package com.jmolly.stacktraceparser.internal;
 estack: prelim atlines (NEWLINE cause)? EOF
 -> ^(ESTACK prelim atlines cause?);
 
-prelim: (EIT WS NEWLINE? threadname WS NEWLINE?)? (classname WS? NEWLINE?)? message?
+prelim: (EIT WS threadname WS)? (classname WS?)? message?
 -> ^(PRELIM ^(THR threadname?) ^(EXC ^(CLS classname?) ^(MSG message?)));
 
 threadname: ((QS)=> QS | .*) -> {new CommonTree(new CommonToken(TNAME,$threadname.text))};
 atlines
 @init { consumeUntil(input, AT); }
 : (atline WS? NEWLINE?)+ -> ^(ATS atline*);
-atline: AT WS classname DOT methodname location -> ^(AT ^(CLS classname) ^(METH methodname) ^(LOC location));
+atline: AT WS methodadress location? -> ^(AT ^(METH methodadress) ^(LOC location?));
 
-location: LP sourcefile (COLON NUMBER)? RP
- -> {new CommonTree(new CommonToken(LOCATION,$location.text))};
+location: LP sourcefileandlinenumber RP
+ -> {new CommonTree(new CommonToken(LOCATION,$sourcefileandlinenumber.text))};
 sourcefile: (NMETH|UNSRC|identifier (DOT fileext)?);
+linenumber: COLON NUMBER;
+sourcefileandlinenumber: sourcefile linenumber?;
 
 cause: CB WS classname WS? message? atlines (moreline)? (NEWLINE cause)?
 -> ^(CAUSE ^(EXC ^(CLS classname) ^(MSG message?)) atlines ^(MORE moreline?) cause?);
@@ -81,8 +84,8 @@ message: COLON (options {greedy=false;}:.)*
 
 classname: (identifier DOT)* identifier (DOLL identifier)?
  -> {new CommonTree(new CommonToken(CNAME,$classname.text))};
-methodname: (identifier|INIT|CLINIT)
- -> {new CommonTree(new CommonToken(MNAME,$methodname.text))};
+methodadress: (identifier DOT)* identifier (DOLL identifier)? DOT (identifier|INIT|CLINIT)
+ -> {new CommonTree(new CommonToken(MNAME,$methodadress.text))};
 
 identifier: (IDENTIFIER|AT|IN|MORE|JAVA);
 fileext: identifier;

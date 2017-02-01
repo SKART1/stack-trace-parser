@@ -47,19 +47,24 @@ public class ParserTest {
         assertEquals(result.getTrace().getException().getMessage(), ": java.lang.reflect.InvocationTargetException");
         assertEquals(result.getTrace().getFrames().get(0).getClassName(), "test.a.pkg.Dog");
         assertEquals(result.getTrace().getFrames().get(0).getMethodName(), "bark");
+        assertEquals(result.getTrace().getFrames().get(0).getLocation(), "Dog.java:8");
+
         assertEquals(result.getTrace().getFrames().get(4).getClassName(), "sun.reflect.NativeMethodAccessorImpl");
         assertEquals(result.getTrace().getFrames().get(4).getMethodName(), "invoke0");
         assertEquals(result.getTrace().getFrames().get(8).getClassName(), "com.intellij.rt.execution.application.AppMain");
         assertEquals(result.getTrace().getFrames().get(8).getMethodName(), "main");
         assertEquals(result.getTrace().getFrames().size(), 9);
+
         assertEquals(result.getTrace().getNested().getException().getClassName(), "java.lang.reflect.InvocationTargetException");
         assertEquals(result.getTrace().getNested().getException().getMessage(), null);
         assertEquals(result.getTrace().getNested().getFrames().size(), 6);
+
         assertEquals(result.getTrace().getNested().getNested().getException().getClassName(), "java.lang.IllegalStateException");
         assertEquals(result.getTrace().getNested().getNested().getException().getMessage(), ": You tried to spin.");
         assertEquals(result.getTrace().getNested().getNested().getFrames().get(0).getClassName(), "Cobby");
         assertEquals(result.getTrace().getNested().getNested().getFrames().get(0).getMethodName(), "spin");
         assertEquals(result.getTrace().getNested().getNested().getFrames().size(), 1);
+
         assertEquals(result.getTrace().getNested().getNested().getNested().getException().getClassName(), "java.lang.RuntimeException");
         assertEquals(result.getTrace().getNested().getNested().getNested().getException().getMessage(), ": can't zap right now");
         assertEquals(result.getTrace().getNested().getNested().getNested().getFrames().size(), 3);
@@ -68,7 +73,18 @@ public class ParserTest {
 
     public void testWithoutLineNumbers() throws IOException, RecognitionException {
         NStackTrace result = StackTraceParser.parse(loadStack("WithoutLineNumbers.txt"));
-        //assertEquals(result.getThreadName(), "main");
+        assertEquals(result.getThreadName(), "main");
+        assertEquals(result.getTrace().getException().getClassName(), "java.lang.RuntimeException");
+        assertEquals(result.getTrace().getException().getMessage(), ": java.lang.reflect.InvocationTargetException");
+        assertEquals(result.getTrace().getFrames().get(0).getClassName(), "test.a.pkg.Dog");
+        assertEquals(result.getTrace().getFrames().get(0).getMethodName(), "bark");
+        assertEquals(result.getTrace().getFrames().get(0).getLocation(), "");
+
+        assertEquals(result.getTrace().getNested().getException().getClassName(), "java.lang.IllegalStateException");
+        assertEquals(result.getTrace().getNested().getException().getMessage(), ": You tried to spin.");
+        assertEquals(result.getTrace().getNested().getFrames().get(0).getClassName(), "Cobby");
+        assertEquals(result.getTrace().getNested().getFrames().get(0).getMethodName(), "spin");
+        assertEquals(result.getTrace().getNested().getFrames().get(0).getLocation(), "");
     }
 
     public void testIllformed() throws RecognitionException {
